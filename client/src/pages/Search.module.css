@@ -1,0 +1,51 @@
+.page {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.title {
+  margin: 0;
+  font-size: var(--text-2xl);
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-height: 2.5rem;
+  margin-bottom: calc(var(--space-2) * -1);
+}
+
+.count {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Reserves the height of a full page of rows, so going from 10 results to 2 doesn't reflow the page. */
+.results {
+  display: grid;
+  align-content: start;
+  gap: var(--space-4);
+  min-height: calc(2.75rem + 10 * var(--row-height));
+}
+
+.empty {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: var(--space-3);
+  min-height: calc(2.75rem + 10 * var(--row-height));
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+  text-align: center;
+}
+
+.emptyTitle {
+  margin: 0;
+  font-weight: 550;
+}
