@@ -1,3 +1,4 @@
+import path from "node:path";
 import express from "express";
 import type { HealthResponse } from "@shared/types.js";
 import { createAnimalsController } from "./controllers/animals.controller.js";
@@ -13,11 +14,13 @@ import { createAuthService } from "./services/auth.service.js";
 export interface AppOptions {
   /** Folder holding animals.json and users.json. Tests point this at a temp copy. */
   dataDir: string;
+  /** Built client to serve, for single-origin production mode. Omitted in dev. */
+  clientDir?: string;
 }
 
 // Composition root: the only place layers are wired together. Swapping the JSON
 // repositories for a database means changing the two create*Repository calls.
-export function createApp({ dataDir }: AppOptions) {
+export function createApp({ dataDir, clientDir }: AppOptions) {
   const authService = createAuthService(createUsersRepository(dataDir));
   const animalsService = createAnimalsService(createAnimalsRepository(dataDir));
 
@@ -33,6 +36,13 @@ export function createApp({ dataDir }: AppOptions) {
   app.use("/api/animales", animalsRoutes(createAnimalsController(animalsService)));
   app.use("/api", notFound);
 
+  if (clientDir !== undefined) {
+    app.use(express.static(clientDir));
+    // Client-side routes (/login, /signup) all resolve to the SPA shell.
+    app.get("/{*splat}", (_req, res) => {
+      res.sendFile(path.join(clientDir, "index.html"));
+    });
+  }
 
   app.use(errorHandler);
   return app;
