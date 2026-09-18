@@ -33,6 +33,18 @@ select {
   transition: border-color 150ms var(--ease-out);
 }
 
+/* The native arrow ignores padding and hugs the border; draw our own, inset
+   by the same space-3 as the text on the left. */
+select {
+  appearance: none;
+  padding-right: calc(var(--space-3) * 2 + 12px);
+  background-image: var(--select-chevron);
+  background-repeat: no-repeat;
+  background-position: right var(--space-3) center;
+  background-size: 12px;
+  cursor: pointer;
+}
+
 input::placeholder {
   color: var(--color-text-muted);
   opacity: 0.8;
