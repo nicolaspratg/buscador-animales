@@ -1,0 +1,67 @@
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.list {
+  display: contents;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: 2rem;
+  padding: 0 var(--space-1) 0 var(--space-3);
+  border-radius: 999px;
+  background: var(--color-accent-soft);
+  color: var(--color-text);
+  font-size: var(--text-sm);
+  list-style: none;
+}
+
+.field {
+  color: var(--color-text-muted);
+}
+
+.field::after {
+  content: ":";
+}
+
+/* 24px circle inside a 32px pill: concentric, and a comfortable hit target. */
+.remove {
+  display: grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition-property: background-color, color, scale;
+  transition-duration: 150ms;
+  transition-timing-function: var(--ease-out);
+}
+
+.remove:active {
+  scale: 0.96;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .remove:hover {
+    background: oklch(0 0 0 / 0.08);
+    color: var(--color-text);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  @media (hover: hover) and (pointer: fine) {
+    .remove:hover {
+      background: oklch(1 0 0 / 0.1);
+    }
+  }
+}

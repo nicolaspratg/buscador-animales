@@ -7,6 +7,17 @@ const textParam = z
   .transform((value) => (value === "" ? undefined : value))
   .optional();
 
+// Repeatable param (`?continente=África&continente=Asia`): values are OR-ed.
+// Express parses one occurrence as a string and several as an array; both
+// normalise to a non-empty list, or undefined for "no filter".
+const multiParam = z
+  .union([z.string(), z.array(z.string())], { error: "Debe ser texto" })
+  .transform((value) => {
+    const values = (Array.isArray(value) ? value : [value]).map((v) => v.trim()).filter((v) => v !== "");
+    return values.length > 0 ? values : undefined;
+  })
+  .optional();
+
 // Not z.coerce.number() alone: it turns "" into 0, which would silently apply a filter.
 const weightParam = z
   .string()
@@ -23,10 +34,10 @@ const positiveIntParam = z.coerce
 export const animalsQuerySchema = z
   .object({
     nombre: textParam,
-    clase: textParam,
-    dieta: textParam,
-    continente: textParam,
-    habitat: textParam,
+    clase: multiParam,
+    dieta: multiParam,
+    continente: multiParam,
+    habitat: multiParam,
     pesoMin: weightParam,
     pesoMax: weightParam,
     // Not z.coerce.boolean(): it maps the string "false" to true.

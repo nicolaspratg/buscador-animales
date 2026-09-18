@@ -1,0 +1,106 @@
+.root {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+/* Matches the text inputs, including the chevron from the global select styles. */
+.trigger {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  min-height: 2.5rem;
+  padding: 0 calc(var(--space-3) * 2 + 12px) 0 var(--space-3);
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface) var(--select-chevron) no-repeat right var(--space-3) center / 12px;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 150ms var(--ease-out);
+}
+
+.trigger[aria-expanded="true"] {
+  border-color: var(--color-focus);
+}
+
+.trigger:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 0;
+  border-color: var(--color-focus);
+}
+
+/* min-width: 0 lets a flex child shrink below its text width, so ellipsis can kick in. */
+.summary {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.panel {
+  position: absolute;
+  top: calc(100% + var(--space-1));
+  left: 0;
+  z-index: 10;
+  display: grid;
+  min-width: max(100%, 12rem);
+  max-height: 18rem;
+  padding: var(--space-1);
+  overflow-y: auto;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow:
+    var(--shadow-border),
+    0 8px 24px -4px oklch(0 0 0 / 0.12);
+  transform-origin: top;
+  transition-property: opacity, scale;
+  transition-duration: 150ms;
+  transition-timing-function: var(--ease-out);
+
+  @starting-style {
+    opacity: 0;
+    scale: 0.97;
+  }
+}
+
+/* Concentric radius: panel radius-lg (12px) minus its 4px padding. */
+.option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 2.25rem;
+  padding: 0 var(--space-2);
+  border-radius: calc(var(--radius-lg) - var(--space-1));
+  font-weight: 400;
+  font-size: var(--text-base);
+  cursor: pointer;
+  transition: background-color 150ms var(--ease-out);
+}
+
+.option input {
+  width: 1rem;
+  height: 1rem;
+  margin: 0;
+  accent-color: var(--color-accent);
+  cursor: pointer;
+}
+
+.option:has(input:focus-visible) {
+  outline: 2px solid var(--color-focus);
+  outline-offset: -2px;
+}
+
+.option input:focus-visible {
+  outline: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .option:hover {
+    background: var(--color-sunken);
+  }
+}

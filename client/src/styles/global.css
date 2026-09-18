@@ -20,7 +20,7 @@ legend {
   font-weight: 550;
 }
 
-input,
+input:not([type="checkbox"], [type="radio"]),
 select {
   width: 100%;
   min-height: 2.5rem;
@@ -64,7 +64,7 @@ a {
   outline-offset: 2px;
 }
 
-input:focus-visible,
+input:not([type="checkbox"], [type="radio"]):focus-visible,
 select:focus-visible {
   outline-offset: 0;
   border-color: var(--color-focus);

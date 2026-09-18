@@ -4,6 +4,10 @@
 export const FILTER_KEYS = ["nombre", "clase", "dieta", "continente", "habitat", "pesoMin", "pesoMax", "enPeligro"] as const;
 export type FilterKey = (typeof FILTER_KEYS)[number];
 
+/** Filters that accept several values, sent as repeated params and OR-ed by the API. */
+export const MULTI_KEYS = ["clase", "dieta", "continente", "habitat"] as const;
+export type MultiKey = (typeof MULTI_KEYS)[number];
+
 export const SORT_FIELDS = ["nombreComun", "pesoPromedioKg", "esperanzaVidaAnios"] as const;
 export type SortField = (typeof SORT_FIELDS)[number];
 export type SortOrder = "asc" | "desc";
@@ -18,14 +22,15 @@ function isSortField(value: string | null): value is SortField {
 export function toApiQuery(params: URLSearchParams): string {
   const query = new URLSearchParams();
   for (const key of API_KEYS) {
-    const value = params.get(key);
-    if (value !== null && value !== "") query.set(key, value);
+    for (const value of params.getAll(key)) {
+      if (value !== "") query.append(key, value);
+    }
   }
   return query.toString();
 }
 
 export function hasActiveFilters(params: URLSearchParams): boolean {
-  return FILTER_KEYS.some((key) => (params.get(key) ?? "") !== "");
+  return FILTER_KEYS.some((key) => params.getAll(key).some((value) => value !== ""));
 }
 
 export function readSort(params: URLSearchParams): { orderBy: SortField | undefined; order: SortOrder } {
@@ -39,4 +44,8 @@ export function readSort(params: URLSearchParams): { orderBy: SortField | undefi
 export function readPage(params: URLSearchParams): number {
   const page = Number(params.get("page"));
   return Number.isInteger(page) && page >= 1 ? page : 1;
+}
+
+export function readMulti(params: URLSearchParams, key: MultiKey): string[] {
+  return params.getAll(key).filter((value) => value !== "");
 }

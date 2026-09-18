@@ -5,7 +5,7 @@ import type { Animal, AuthResponse, FiltrosDisponibles, Paginated } from "@share
 export const FILTROS: FiltrosDisponibles = {
   clases: ["Ave", "Mamífero"],
   dietas: ["Carnívoro", "Herbívoro"],
-  continentes: ["África", "América"],
+  continentes: ["África", "América", "Asia"],
   habitats: ["Sabana", "Selva"],
   pesoMin: 0.0001,
   pesoMax: 5000,

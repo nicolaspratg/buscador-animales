@@ -37,11 +37,35 @@ describe("search page", () => {
     expect(screen.getByRole("status").textContent).toBe("0 animales encontrados");
   });
 
-  it("restores filters from the URL", async () => {
+  it("restores filters from the URL, including repeated values", async () => {
     signIn();
-    renderApp("/?nombre=leon&clase=Mam%C3%ADfero");
+    renderApp("/?nombre=leon&continente=%C3%81frica&continente=Asia");
 
     expect((await screen.findByLabelText<HTMLInputElement>("Nombre")).value).toBe("leon");
-    await waitFor(() => expect(screen.getByLabelText<HTMLSelectElement>("Clase").value).toBe("Mamífero"));
+    expect(screen.getByRole("button", { name: /^Continente/ }).textContent).toBe("2 selecciones");
+    expect(screen.getByRole("button", { name: "Quitar filtro Continente: Asia" })).toBeTruthy();
+  });
+
+  it("sends every checked value and drops one when its pill is removed", async () => {
+    const requests: string[][] = [];
+    server.use(
+      http.get("*/api/animales", ({ request }) => {
+        requests.push(new URL(request.url).searchParams.getAll("continente"));
+        return HttpResponse.json(page([LEON]));
+      }),
+    );
+    signIn();
+    renderApp("/");
+    await screen.findByText("León");
+
+    fireEvent.click(screen.getByRole("button", { name: /^Continente/ }));
+    fireEvent.click(await screen.findByRole("checkbox", { name: "Asia" }));
+    fireEvent.click(screen.getByRole("checkbox", { name: "África" }));
+
+    // Stored in the dataset's order, not click order, so equal selections share a URL.
+    await waitFor(() => expect(requests.at(-1)).toEqual(["África", "Asia"]));
+
+    fireEvent.click(screen.getByRole("button", { name: "Quitar filtro Continente: África" }));
+    await waitFor(() => expect(requests.at(-1)).toEqual(["Asia"]));
   });
 });

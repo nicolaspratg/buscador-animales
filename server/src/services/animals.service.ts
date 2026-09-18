@@ -28,10 +28,10 @@ export function deriveFiltros(animals: readonly Animal[]): FiltrosDisponibles {
 // Every check is `!== undefined`: pesoMin=0 and enPeligro=false are falsy but real filters.
 function matches(animal: Animal, query: AnimalsQuery, nombre: string | undefined): boolean {
   if (nombre !== undefined && !normalizeText(animal.nombreComun).includes(nombre)) return false;
-  if (query.clase !== undefined && animal.clase !== query.clase) return false;
-  if (query.dieta !== undefined && animal.dieta !== query.dieta) return false;
-  if (query.continente !== undefined && animal.continente !== query.continente) return false;
-  if (query.habitat !== undefined && animal.habitat !== query.habitat) return false;
+  if (query.clase !== undefined && !query.clase.includes(animal.clase)) return false;
+  if (query.dieta !== undefined && !query.dieta.includes(animal.dieta)) return false;
+  if (query.continente !== undefined && !query.continente.includes(animal.continente)) return false;
+  if (query.habitat !== undefined && !query.habitat.includes(animal.habitat)) return false;
   if (query.pesoMin !== undefined && animal.pesoPromedioKg < query.pesoMin) return false;
   if (query.pesoMax !== undefined && animal.pesoPromedioKg > query.pesoMax) return false;
   if (query.enPeligro !== undefined && animal.enPeligroExtincion !== query.enPeligro) return false;

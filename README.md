@@ -49,7 +49,8 @@ Todas las rutas de animales requieren `Authorization: Bearer <token>`.
 | `GET` | `/api/animales/filtros` | Valores distintos de cada filtro y rango de peso real |
 
 Parámetros de `/api/animales`, todos opcionales y combinables: `nombre` (parcial, sin
-acentos ni mayúsculas), `clase`, `dieta`, `continente`, `habitat` (exactos), `pesoMin` /
+acentos ni mayúsculas), `clase`, `dieta`, `continente`, `habitat` (exactos; se pueden
+repetir, p. ej. `continente=África&continente=Asia`, y los valores se combinan con O), `pesoMin` /
 `pesoMax` (rango inclusivo, admite decimales), `enPeligro` (`true` / `false`),
 `orderBy` (`nombreComun` | `pesoPromedioKg` | `esperanzaVidaAnios`), `order`
 (`asc` | `desc`), `page` y `limit` (por defecto 1 y 10, máximo 100).
@@ -140,8 +141,8 @@ parte) y ~3 kB de CSS.
 
 ## Tests
 
-`npm test` corre 29 tests de integración de la API (vitest + supertest, sobre una copia
-temporal de los datos) y 5 del cliente (Testing Library + msw). Cubren, entre otros:
+`npm test` corre 31 tests de integración de la API (vitest + supertest, sobre una copia
+temporal de los datos) y 6 del cliente (Testing Library + msw). Cubren, entre otros:
 búsqueda sin acentos, rango de peso inclusivo, `pesoMin=0` y `enPeligro=false`,
 resultados vacíos con `200`, `pesoMin > pesoMax` → `400`, tokens ausentes, malformados
 y expirados, email duplicado, registros concurrentes, redirección de rutas protegidas y

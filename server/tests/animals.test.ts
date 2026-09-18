@@ -99,6 +99,19 @@ describe("GET /api/animales filters", () => {
     expect(names(res.body).sort()).toEqual(["Avestruz", "Guacamayo rojo"]);
   });
 
+  it("ORs repeated values within a filter", async () => {
+    const res = await search("continente=África&continente=Asia&limit=100");
+
+    expect(res.body.meta.total).toBe(10);
+    expect(res.body.data.every((animal: Animal) => ["África", "Asia"].includes(animal.continente))).toBe(true);
+  });
+
+  it("ANDs multi-value filters across fields", async () => {
+    const res = await search("clase=Ave&clase=Reptil&dieta=Herbívoro");
+
+    expect(names(res.body).sort()).toEqual(["Colibrí abeja", "Tortuga gigante de Galápagos"]);
+  });
+
   it("rejects pesoMin greater than pesoMax", async () => {
     const res = await search("pesoMin=100&pesoMax=10");
 
