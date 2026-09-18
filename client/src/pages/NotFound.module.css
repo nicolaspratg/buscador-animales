@@ -1,0 +1,7 @@
+.page {
+  display: grid;
+  place-content: center;
+  min-height: 100dvh;
+  padding: var(--space-5);
+  text-align: center;
+}
