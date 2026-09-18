@@ -1,9 +1,13 @@
 import express from "express";
 import type { HealthResponse } from "@shared/types.js";
+import { createAnimalsController } from "./controllers/animals.controller.js";
 import { createAuthController } from "./controllers/auth.controller.js";
 import { errorHandler, notFound } from "./middleware/errorHandler.js";
+import { createAnimalsRepository } from "./repositories/animals.repository.js";
 import { createUsersRepository } from "./repositories/users.repository.js";
+import { animalsRoutes } from "./routes/animals.routes.js";
 import { authRoutes } from "./routes/auth.routes.js";
+import { createAnimalsService } from "./services/animals.service.js";
 import { createAuthService } from "./services/auth.service.js";
 
 export interface AppOptions {
@@ -12,9 +16,10 @@ export interface AppOptions {
 }
 
 // Composition root: the only place layers are wired together. Swapping the JSON
-// repository for a database means changing the create*Repository call.
+// repositories for a database means changing the two create*Repository calls.
 export function createApp({ dataDir }: AppOptions) {
   const authService = createAuthService(createUsersRepository(dataDir));
+  const animalsService = createAnimalsService(createAnimalsRepository(dataDir));
 
   const app = express();
   app.disable("x-powered-by");
@@ -25,6 +30,7 @@ export function createApp({ dataDir }: AppOptions) {
     res.json(body);
   });
   app.use("/api/auth", authRoutes(createAuthController(authService)));
+  app.use("/api/animales", animalsRoutes(createAnimalsController(animalsService)));
   app.use("/api", notFound);
 
 
